@@ -1,10 +1,8 @@
 var express = require("express"),
     bodyParser = require("body-parser"),
     mongoose = require("mongoose"),
-    // Campground = require("./models/campground"),
     passport = require("passport"),
     LocalStrategy = require("passport-local"),
-    // Comment = require("./models/comment"),
     User = require("./models/user"),
     app = express();
 
@@ -24,6 +22,11 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.set("view engine", "ejs");
+app.use(express.static("public"));
+app.use(function (req, res, next) {
+    res.locals.currentUser = req.user;
+    next();
+})
 
 
 //passport
@@ -51,7 +54,9 @@ app.get("/", function (req, res) {
 });
 
 app.get("/index", isLogedIn, function (req, res) {
-    res.render("index");
+    res.render("index", {
+        currentUser: req.user
+    });
 })
 
 //===========================
@@ -72,8 +77,8 @@ app.post("/register", function (req, res) {
     });
     User.register(newUser, req.body.password, function (err, user) {
         if (err) {
-            console.log(err);
-            return res.render(register);
+            console.log(err.message);
+            res.redirect("/register");
         } else {
             passport.authenticate("local")(req, res, function () {
                 res.redirect("/index");
