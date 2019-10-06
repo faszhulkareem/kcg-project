@@ -6,13 +6,30 @@ var express = require("express"),
     User = require("./models/user"),
     app = express();
 
-//mongoose
-const url = 'mongodb://localhost:27017/kcg';
-mongoose.connect(url, {
+//mongoose local connection
+// const url = 'mongodb://localhost:27017/kcg';
+// mongoose.connect(url, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+// });
+
+//mongoose database connection
+// const url = 'mongodb+srv://fazlul:faszhul1219@cluster0-zzba4.mongodb.net/kcg';
+// mongoose.connect(url, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+// });
+// //mongoose database connection
+// console.log(process.env.DATABASEURL);
+// mongoose.connect(process.env.DATABASEURL, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+// });
+console.log(process.env.DATABASEURL)
+mongoose.connect(process.env.DATABASEURL || "mongodb+srv://kcg:kcg123@cluster0-zzba4.mongodb.net/kcg", {
     useNewUrlParser: true,
     useUnifiedTopology: true
-});
-
+}).catch(error => handleError(error));
 
 //==================================================
 //config
@@ -127,3 +144,6 @@ function isLogedIn(req, res, next) {
 app.listen(3000, function () {
     console.log("staring the server...")
 })
+// app.listen(process.env.PORT, process.env.IP, function () {
+//     console.log("staring the server...")
+// })
